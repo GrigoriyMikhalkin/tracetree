@@ -16,6 +16,7 @@ type ServiceInfo struct {
   Service string         `json:"service"`
   Start   string         `json:"start"`
   End     string         `json:"end"`
+  Span    string         `json:"span"`
   Calls   []*ServiceInfo `json:"calls"`
 }
 
@@ -38,6 +39,7 @@ func (t *Tree) UpdateServiceInfo(message *Message) {
 
   serviceInfo.mx.Lock()
   serviceInfo.Service = message.Service
+  serviceInfo.Span = message.Span
   serviceInfo.Start = message.Start
   serviceInfo.End = message.End
   serviceInfo.mx.Unlock()

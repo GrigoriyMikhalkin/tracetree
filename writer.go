@@ -7,10 +7,6 @@ import (
   "sync"
 )
 
-const (
-  chanSize = 1000
-)
-
 type Writer interface {
   GetChan() chan<- *Tree
   Run()

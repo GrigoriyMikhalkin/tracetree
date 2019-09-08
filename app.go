@@ -23,12 +23,14 @@ func NewApp(scanner *bufio.Scanner, bundler Bundler, writer Writer) *App {
 
 func (a *App) Run(autoTerminate bool) {
   defer a.wg.Wait()
-  a.eventLoop(autoTerminate)
+  a.eventLoop()
 }
 
 // eventLoop checks new messages in source and puts them in queue
-func (a *App) eventLoop(autoTerminate bool) {
+func (a *App) eventLoop() {
+
   for a.scanner.Scan() {
+
     text := a.scanner.Text()
     a.wg.Add(1)
     go a.processMessage(text)
@@ -50,7 +52,7 @@ func (a *App) processMessage(text string) {
   }
 
   // Wait few milliseconds, just in case, if some logs are late
-  time.Sleep(100 * time.Millisecond)
+  time.Sleep(500 * time.Millisecond)
   tree, err := a.bundler.GetTraceTree(message.TraceID)
   a.writer.GetChan() <- tree
 }

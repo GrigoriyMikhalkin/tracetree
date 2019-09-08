@@ -10,6 +10,7 @@ const (
   spansCount = 2
   messageTextElements = 5
   referenceDateTimeFormat = "2006-01-02T15:04:05.000Z"
+  altReferenceDateTimeFormat = "2006-01-02T15:04:05Z"
 
   RootParent = "null"
 )
@@ -39,9 +40,8 @@ func (m *Message) IsRoot() (root bool) {
 */
 func ParseMessage(text string) (message *Message, err error) {
   splittedText := strings.Split(text, " ")
-  valid := validateMessage(splittedText)
-  if !valid {
-    err = fmt.Errorf("Message is invalid")
+  err = validateMessage(splittedText)
+  if err != nil {
     return
   }
 
@@ -58,27 +58,35 @@ func ParseMessage(text string) (message *Message, err error) {
   return
 }
 
-func validateMessage(splittedText []string) (valid bool) {
+func validateMessage(splittedText []string) (err error) {
   if len(splittedText) != messageTextElements {
+    err = fmt.Errorf("Not enough elements")
     return
   }
 
   if _, err := time.Parse(referenceDateTimeFormat, splittedText[0]); err != nil {
-    return
+    if _, err := time.Parse(altReferenceDateTimeFormat, splittedText[0]); err != nil {
+      err = fmt.Errorf("Incorrect start date format, %s", splittedText[0])
+      return err
+    }
   }
 
   if _, err := time.Parse(referenceDateTimeFormat, splittedText[1]); err != nil {
-    return
+    if _, err := time.Parse(altReferenceDateTimeFormat, splittedText[1]); err != nil {
+      err = fmt.Errorf("Incorrect end date format, %s", splittedText[1])
+      return err
+    }
   }
 
   // Check that there 2 spans, and they're not the same
   spans := strings.Split(splittedText[4], "->")
   if len(spans) != spansCount {
+    err = fmt.Errorf("Not enough spans")
     return
   } else if spans[0] == spans[1] {
+    err = fmt.Errorf("Span and parent span are the same")
     return
   }
 
-  valid = true
   return
 }
