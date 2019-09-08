@@ -21,7 +21,7 @@ func NewApp(scanner *bufio.Scanner, bundler Bundler, writer Writer) *App {
   }
 }
 
-func (a *App) Run(autoTerminate bool) {
+func (a *App) Run() {
   defer a.wg.Wait()
   a.eventLoop()
 }

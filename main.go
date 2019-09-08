@@ -8,7 +8,6 @@ import (
 )
 
 func main() {
-  var autoTerminate bool
   var wg sync.WaitGroup
 
   inputFilePtr := flag.String("infile", "", "Input file")
@@ -17,7 +16,6 @@ func main() {
 
   infile, scanner := getScanner(*inputFilePtr)
   if infile != nil {
-    autoTerminate = true
     defer infile.Close()
   }
 
@@ -32,7 +30,7 @@ func main() {
   wg.Add(1)
   defer wg.Wait()
   go writer.Run()
-  app.Run(autoTerminate)
+  app.Run()
   close(writer.GetChan())
 }
 

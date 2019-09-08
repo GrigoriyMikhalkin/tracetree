@@ -24,7 +24,7 @@ func TestRun(t *testing.T) {
   }
   app := tracetree.NewApp(scanner, bundler, writer)
 
-  go app.Run(false)
+  go app.Run()
 
   // Valid message, incomplete trace tree
   w.Write([]byte(validMessage))
